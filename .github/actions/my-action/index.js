@@ -6,7 +6,7 @@ try {
   
   // Do something with the input
   console.log(`Processing: ${inputName}`);
-  
+    
   // Set output
   core.setOutput('output-name', `Processed: ${inputName}`);
   
