@@ -46,6 +46,7 @@ jobs:
               return;
             }
 
+            console.log('raw results:', raw);
             const results = JSON.parse(raw);
             const findings = results.findings ?? [];
 
