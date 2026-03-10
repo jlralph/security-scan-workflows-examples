@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: poutine - GitHub Actions SAST
+        uses: boostsecurityio/poutine-action@v0.15.2
       
       - name: Run my custom action
         id: action
