@@ -1,21 +1,119 @@
-name: Test My Action
+name: SAST Scan
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  test-action:
+  sast-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      security-events: write
+
     steps:
       - uses: actions/checkout@v4
 
       - name: poutine - GitHub Actions SAST
         uses: boostsecurityio/poutine-action@v0.15.2
-      
+        continue-on-error: true
+        with:
+          format: json
+          output: poutine-results.json
+
+      - name: Upload scan results archive
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sast-scan-results
+          path: poutine-results.json
+          retention-days: 30
+
+      - name: Create GitHub Issues from findings
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            if (!fs.existsSync('poutine-results.json')) {
+              core.warning('No scan results file found — skipping issue creation.');
+              return;
+            }
+
+            const raw = fs.readFileSync('poutine-results.json', 'utf8').trim();
+            if (!raw) {
+              console.log('Scan results file is empty — no findings.');
+              return;
+            }
+
+            const results = JSON.parse(raw);
+            const findings = results.findings ?? [];
+
+            if (findings.length === 0) {
+              console.log('No findings to report.');
+              return;
+            }
+
+            // Fetch existing open SAST issues to avoid duplicates
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'sast'
+            });
+            const existingTitles = new Set(existing.data.map(i => i.title));
+
+            for (const finding of findings) {
+              const rule   = finding.rule   ?? finding;
+              const ruleId = rule.id        ?? finding.rule_id ?? 'unknown-rule';
+              const title  = `[SAST] ${ruleId}: ${rule.title ?? finding.title ?? 'Security Finding'}`;
+
+              if (existingTitles.has(title)) {
+                console.log(`Skipping duplicate issue: ${title}`);
+                continue;
+              }
+
+              const severity    = rule.severity    ?? finding.severity    ?? 'Unknown';
+              const description = rule.description ?? finding.description ?? 'No description provided.';
+              const remediation = rule.remediation ?? finding.remediation ?? 'Please review and remediate.';
+              const filePath    = finding.path     ?? finding.file        ?? 'N/A';
+              const line        = finding.line     ?? finding.start_line  ?? '';
+
+              const body = [
+                '## Security Finding Detected by poutine',
+                '',
+                `| Field | Value |`,
+                `|-------|-------|`,
+                `| **Rule** | \`${ruleId}\` |`,
+                `| **Severity** | ${severity} |`,
+                `| **File** | \`${filePath}${line ? `:${line}` : ''}\` |`,
+                '',
+                '### Description',
+                description,
+                '',
+                '### Remediation',
+                remediation,
+                '',
+                `---`,
+                `*Detected by [poutine](https://github.com/boostsecurityio/poutine) on commit \`${context.sha.slice(0, 7)}\`*`
+              ].join('\n');
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['sast', 'security']
+              });
+
+              console.log(`Created issue: ${title}`);
+            }
+
       - name: Run my custom action
         id: action
         uses: ./.github/actions/my-action
         with:
           input-name: 'Hello World'
-      
+
       - name: Use output
         run: echo "Output was:${{ steps.action.outputs.output-name }}"
