@@ -7,3 +7,5 @@ Write your name on line 6, save it, and then head back to GitHub Desktop.
 [![SAST Scan](https://github.com/jlralph/desktop-tutorial/actions/workflows/sast.yml/badge.svg)](https://github.com/jlralph/desktop-tutorial/actions/workflows/sast.yml)
 
 [![CodeQL Advanced](https://github.com/jlralph/desktop-tutorial/actions/workflows/codeql.yml/badge.svg)](https://github.com/jlralph/desktop-tutorial/actions/workflows/codeql.yml)
+
+[![OSV-Scanner PR Scan](https://github.com/jlralph/desktop-tutorial/actions/workflows/osv-scanner.yml/badge.svg?branch=main)](https://github.com/jlralph/desktop-tutorial/actions/workflows/osv-scanner.yml)
