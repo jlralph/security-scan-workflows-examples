@@ -24,7 +24,9 @@ jobs:
           cache: maven
 
       - name: Build and start Spring Boot app
-        run: mvn -B spring-boot:run --file pom.xml &
+        run: |
+          export JAVA_HOME=$JAVA_HOME_21_X64
+          mvn -B spring-boot:run --file pom.xml &
 
       - name: Wait for app to be ready
         run: |
