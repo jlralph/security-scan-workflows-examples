@@ -23,10 +23,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Export Java 21 path
+        run: echo "JAVA_HOME_21_X64=$JAVA_HOME_21_X64" >> $GITHUB_ENV
+
       - name: Build and start Spring Boot app
-        run: |
-          export JAVA_HOME=$JAVA_HOME_21_X64
-          mvn -B spring-boot:run --file pom.xml &
+        env:
+          JAVA_HOME: ${{ env.JAVA_HOME_21_X64 }}
+        run: mvn -B spring-boot:run --file pom.xml &
 
       - name: Wait for app to be ready
         run: |
