@@ -42,6 +42,8 @@ jobs:
       - name: Run Dastardly Action Step
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
+        env:
+          JAVA_HOME: ""
         with:
           target-url: 'http://localhost:8080'
 
