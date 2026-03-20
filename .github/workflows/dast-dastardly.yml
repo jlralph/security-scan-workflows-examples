@@ -49,11 +49,12 @@ jobs:
           done
           echo "App did not start in time." && exit 1
 
+      - name: Clear JAVA_HOME for Dastardly
+        run: echo "JAVA_HOME=" >> $GITHUB_ENV
+
       - name: Run Dastardly Action Step
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
-        env:
-          JAVA_HOME: ${{ env.APP_JAVA_HOME }}
         with:
           target-url: 'http://localhost:8080'
 
