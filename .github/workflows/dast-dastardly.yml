@@ -26,10 +26,15 @@ jobs:
       - name: Resolve JAVA_HOME from PATH
         run: echo "APP_JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      - name: Build and start Spring Boot app
+      - name: Build Spring Boot app
         env:
           JAVA_HOME: ${{ env.APP_JAVA_HOME }}
-        run: mvn -B spring-boot:run --file pom.xml &
+        run: mvn -B package -DskipTests --file pom.xml
+
+      - name: Start Spring Boot app
+        env:
+          JAVA_HOME: ${{ env.APP_JAVA_HOME }}
+        run: java -jar target/*.jar &
 
       - name: Wait for app to be ready
         run: |
