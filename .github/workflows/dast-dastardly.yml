@@ -44,16 +44,12 @@ jobs:
       - name: Run Dastardly Action Step
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
-        env:
-          JAVA_HOME: ""
         with:
           target-url: 'http://localhost:8080'
 
       - name: Publish Test Report
         if: always()
         uses: mikepenz/action-junit-report@v3
-        env:
-          JAVA_HOME: ""
         with:
           report_paths: '**/dastardly-report.xml'
           require_tests: false
