@@ -49,14 +49,15 @@ jobs:
           done
           echo "App did not start in time." && exit 1
 
-      - name: Clear JAVA_HOME for Dastardly
-        run: echo "JAVA_HOME=" >> $GITHUB_ENV
-
-      - name: Run Dastardly Action Step
+      - name: Run Dastardly Scan
         continue-on-error: true
-        uses: PortSwigger/dastardly-github-action@main
-        with:
-          target-url: 'http://localhost:8080'
+        run: |
+          docker run --rm \
+            --network host \
+            -v $GITHUB_WORKSPACE:/github/workspace \
+            -e BURP_START_URL=http://localhost:8080 \
+            -e BURP_REPORT_FILE_PATH=/github/workspace/dastardly-report.xml \
+            public.ecr.aws/portswigger/dastardly:latest
 
       - name: Publish Test Report
         if: always()
