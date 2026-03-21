@@ -52,6 +52,8 @@ jobs:
       - name: Run Dastardly Scan
         continue-on-error: true
         run: |
+          touch $GITHUB_WORKSPACE/dastardly-report.xml
+          chmod 777 $GITHUB_WORKSPACE/dastardly-report.xml
           docker run --rm \
             --network host \
             -v $GITHUB_WORKSPACE:/github/workspace \
