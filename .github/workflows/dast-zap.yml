@@ -1,4 +1,4 @@
-name: ZAP Scan (OWASP ZAP)
+name: ZAP Scan (Checkmarx ZAP)
 
 on: [push]
 
