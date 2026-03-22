@@ -1,4 +1,4 @@
-name: DAST Scan (Checkmarx ZAP)
+name: DAST (Checkmarx ZAP)
 
 on: [push]
 

@@ -1,4 +1,4 @@
-name: DAST Scan (Dastardly)
+name: DAST (Dastardly)
 
 on:
   push:
