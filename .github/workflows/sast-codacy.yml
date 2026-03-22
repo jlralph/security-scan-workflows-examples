@@ -11,7 +11,7 @@
 # For more information on Codacy Analysis CLI in general, see
 # https://github.com/codacy/codacy-analysis-cli.
 
-name: Codacy Security Scan
+name: SAST (Codacy)
 
 on:
   push:
@@ -19,9 +19,7 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "main" ]
-  schedule:
-    - cron: '29 17 * * 2'
-
+  
 permissions:
   contents: read
 

@@ -1,4 +1,4 @@
-name: Dependency Check
+name: SAST (OWASP Dependency Check)
 
 on: [push]
 
