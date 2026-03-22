@@ -1,4 +1,4 @@
-name: SAST Scan
+name: SAST Scan (Poutine)
 
 on: [push, pull_request]
 
