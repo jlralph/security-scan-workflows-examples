@@ -1,5 +1,7 @@
 name: Vulnerability Scan
 on: [push]
+permissions:
+  contents: read
 jobs:
   owasp-scan:
     if: github.actor != 'dependabot[bot]'
